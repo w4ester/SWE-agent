@@ -14,6 +14,7 @@ from sweagent.run.hooks.abstract import RunHook
 from sweagent.run.merge_predictions import merge_predictions
 from sweagent.types import AgentRunResult
 from sweagent.utils.log import get_logger
+from security import safe_command
 
 
 class SweBenchEvaluate(RunHook):
@@ -75,8 +76,7 @@ class SweBenchEvaluate(RunHook):
             self.last_evaluation_time = current_time
 
         self._running_calls.append(
-            subprocess.Popen(
-                self._get_sb_call(preds_path=self.output_dir / "tmppreds.json", submit_only=True),
+            safe_command.run(subprocess.Popen, self._get_sb_call(preds_path=self.output_dir / "tmppreds.json", submit_only=True),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
@@ -98,8 +98,7 @@ class SweBenchEvaluate(RunHook):
     def on_end(self) -> None:
         self.logger.info("Submitting results to SWE-Bench")
         try:
-            subprocess.run(
-                self._get_sb_call(preds_path=self.output_dir / "preds.json"),
+            safe_command.run(subprocess.run, self._get_sb_call(preds_path=self.output_dir / "preds.json"),
                 check=True,
                 stdout=sys.stdout,
                 stderr=sys.stderr,

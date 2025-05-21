@@ -18,6 +18,7 @@ from textual.widgets import Footer, Header, Input, ListItem, ListView, Static
 
 from sweagent.utils.files import load_file
 from sweagent.utils.serialization import _yaml_serialization_with_linebreaks
+from security import safe_command
 
 
 def _move_items_top(d: dict, keys: list[str]) -> dict:
@@ -316,7 +317,7 @@ class FileViewerScreen(ModalScreen):
             self.app.notify("No editor found in $EDITOR environment variable, cannot perform action", severity="error")
             return
         try:
-            subprocess.run([editor, str(self.path)], check=True)
+            safe_command.run(subprocess.run, [editor, str(self.path)], check=True)
         except subprocess.CalledProcessError:
             pass
 

@@ -12,6 +12,7 @@ from sweagent.run.common import _is_promising_patch
 from sweagent.run.hooks.abstract import RunHook
 from sweagent.types import AgentRunResult
 from sweagent.utils.log import get_logger
+from security import safe_command
 
 
 class SaveApplyPatchHook(RunHook):
@@ -99,7 +100,7 @@ class SaveApplyPatchHook(RunHook):
         # somewhere else
         cmd = ["git", "apply", str(patch_file.resolve())]
         try:
-            subprocess.run(cmd, cwd=local_dir, check=True)
+            safe_command.run(subprocess.run, cmd, cwd=local_dir, check=True)
         except subprocess.CalledProcessError as e:
             self.logger.error(f"Failed to apply patch {patch_file} to {local_dir}: {e}")
             return
