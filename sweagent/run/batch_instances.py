@@ -1,4 +1,3 @@
-import random
 import re
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -18,6 +17,7 @@ from sweagent.environment.repo import GithubRepoConfig, LocalRepoConfig, PreExis
 from sweagent.environment.swe_env import EnvironmentConfig
 from sweagent.utils.files import load_file
 from sweagent.utils.log import get_logger
+import secrets
 
 logger = get_logger("swea-config", emoji="🔧")
 
@@ -62,8 +62,8 @@ def _filter_batch_items(
 ) -> list[BatchInstance]:
     if shuffle:
         instances = sorted(instances.copy(), key=lambda x: x.problem_statement.id)
-        random.seed(42)
-        random.shuffle(instances)
+        secrets.SystemRandom().seed(42)
+        secrets.SystemRandom().shuffle(instances)
     before_filter = len(instances)
     instances = [instance for instance in instances if re.match(filter_, instance.problem_statement.id)]
     after_filter = len(instances)

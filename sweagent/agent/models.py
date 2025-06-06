@@ -3,7 +3,6 @@ from __future__ import annotations
 import copy
 import json
 import os
-import random
 import shlex
 import threading
 import time
@@ -39,6 +38,7 @@ from sweagent.exceptions import (
 from sweagent.tools.tools import ToolConfig
 from sweagent.types import History, HistoryItem
 from sweagent.utils.log import get_logger
+import secrets
 
 try:
     import readline  # noqa: F401
@@ -167,7 +167,7 @@ class GenericAPIModelConfig(PydanticBaseModel):
         if not api_keys:
             return None
         if not self.choose_api_key_by_thread:
-            return random.choice(api_keys)
+            return secrets.choice(api_keys)
         thread_name = threading.current_thread().name
         if thread_name not in _THREADS_THAT_USED_API_KEYS:
             _THREADS_THAT_USED_API_KEYS.append(thread_name)
@@ -535,7 +535,7 @@ class InstantEmptySubmitTestModel(AbstractModel):
         self._action_idx = 0
 
     def query(self, history: list[dict[str, str]]) -> dict:
-        time.sleep(random.uniform(0, self.config.delay))
+        time.sleep(secrets.SystemRandom().uniform(0, self.config.delay))
         # Need to at least do _something_ to submit
         if self._action_idx == 0:
             self._action_idx = 1

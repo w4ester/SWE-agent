@@ -1,5 +1,4 @@
 import os
-import random
 import shlex
 
 from ghapi.all import GhApi
@@ -15,6 +14,7 @@ from sweagent.utils.github import (
     _parse_gh_issue_url,
 )
 from sweagent.utils.log import get_logger
+import secrets
 
 # NOTE
 # THE IMPLEMENTATION DETAILS HERE WILL CHANGE SOON!
@@ -36,7 +36,7 @@ def open_pr(*, logger, token, env: SWEEnv, github_url, trajectory, _dry_run: boo
     except InvalidGithubURL as e:
         msg = "Data path must be a github issue URL if open_pr is set to True."
         raise ValueError(msg) from e
-    branch_name = f"swe-agent-fix-#{issue.number}-" + str(random.random())[2:10]
+    branch_name = f"swe-agent-fix-#{issue.number}-" + str(secrets.SystemRandom().random())[2:10]
     env.communicate(
         input="git config user.email 'noemail@swe-agent.com' && git config user.name 'SWE-agent'",
         error_msg="Failed to set git user",

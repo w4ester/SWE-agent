@@ -1,7 +1,6 @@
 import logging
 import time
 from concurrent.futures import ThreadPoolExecutor
-from random import random
 from threading import Lock
 
 from rich.console import Group
@@ -17,6 +16,7 @@ from rich.progress import (
     TimeElapsedColumn,
     TimeRemainingColumn,
 )
+import secrets
 
 logging.basicConfig(level="NOTSET", handlers=[RichHandler(level="NOTSET")])
 logger = logging.getLogger("rich")
@@ -42,11 +42,11 @@ class RunBatch:
 
         logger.info("Starting task %d", task_id)
         # Startup
-        time.sleep(random() * 4.5)
+        time.sleep(secrets.SystemRandom().random() * 4.5)
         # Work
         with progress_lock:
             self._task_progress_bar.update(spinner_task_id, description=f"Task {task_id} (working)")
-        time.sleep(random() * 4.5 + 2)
+        time.sleep(secrets.SystemRandom().random() * 4.5 + 2)
         logger.info("Finished task %d", task_id)
 
         # Remove spinner and update main progress

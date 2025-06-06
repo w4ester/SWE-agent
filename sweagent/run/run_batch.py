@@ -32,7 +32,6 @@ With [green]filter[/green], you can select specific instances, e.g., [green]--in
 import getpass
 import json
 import logging
-import random
 import sys
 import time
 import traceback
@@ -70,6 +69,7 @@ from sweagent.utils.log import (
     remove_file_handler,
     set_stream_handler_levels,
 )
+import secrets
 
 
 class RunBatchConfig(BaseSettings, cli_implicit_flags=False):
@@ -294,7 +294,7 @@ class RunBatch:
         self._add_instance_log_file_handlers(instance.problem_statement.id, multi_worker=self._num_workers > 1)
         # Let's add some randomness to avoid any potential race conditions or thundering herd
         if self._progress_manager.n_completed < self._num_workers:
-            time.sleep(random.random() * self._random_delay_multiplier * (self._num_workers - 1))
+            time.sleep(secrets.SystemRandom().random() * self._random_delay_multiplier * (self._num_workers - 1))
 
         self._progress_manager.on_instance_start(instance.problem_statement.id)
 
